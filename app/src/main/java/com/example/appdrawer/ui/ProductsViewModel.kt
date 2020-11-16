@@ -25,7 +25,7 @@ class ProductsViewModel : ViewModel() {
             override fun onResponse(call: Call<List<Products>>, response: Response<List<Products>>) {
                 status.value = false
                 if (response.isSuccessful){
-                    data.value = response.body()
+                    data.value = response.body()?.let { it }
                 } else {
                     status.value = true
                 }

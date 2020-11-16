@@ -1,16 +1,15 @@
 package com.example.appdrawer.adapter
 
+import android.content.Context
+import android.content.Context.*
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.appdrawer.R
+import com.bumptech.glide.Glide
+import com.example.appdrawer.databinding.ItemProductsBinding
 import com.example.appdrawer.model.Products
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.item_products.view.*
 
-class ProductsAdapter(data: List<Products>) :
-    RecyclerView.Adapter<ProductsAdapter.ProductsHolder>() {
+class ProductsAdapter(private val context: Context):RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
     private var datas = listOf<Products>()
 
     fun setData(data: List<Products>){
@@ -18,29 +17,83 @@ class ProductsAdapter(data: List<Products>) :
         notifyDataSetChanged()
     }
 
-    class ProductsHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: Products) {
-            with(itemView) {
-                nameProducts.text = item.title
-                categProducts.text = item.category
-                descProducts.text = item.description
-                //priceProducts.text = item.price.toString()
-                Picasso.get().load(item.image)
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
-                    .into(imgProducts)
 
-            }
 
+    inner class ViewHolder (private val binding: ItemProductsBinding) :
+        RecyclerView.ViewHolder(binding.root){
+        fun binData(letak:Products){
+            binding.nameProducts.text = letak.title
+            binding.categProducts.text = letak.category
+            binding.descProducts.text = letak.description
+            binding.priceProducts.text = letak.price.toString()
+            Glide.with(binding.root).load(letak.image).into(binding.imgProducts)
+        }
+
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
+            ItemProductsBinding.inflate(LayoutInflater.from(context), parent,false))
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binData(datas[position])
+    }
+
+    override fun getItemCount(): Int = datas.size
+}
+
+/*
+* interface TodoListener {
+    fun onClick(todo: String)
+    fun onDelete(todo: String)
+}
+
+class TodoAdapter(
+    private val context: Context, private val listener: TodoListener
+) : RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
+
+    inner class ViewHolder(
+        private val binding: ItemTodoBinding,
+        private val listener: TodoListener
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bindData(todo: String) {
+            binding.tvTodo.text = todo
+
+            binding.root.setOnClickListener { listener.onClick(todo) }
+            binding.ivTodo.setOnClickListener { listener.onDelete(todo) }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-            = ProductsHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_products, parent, false))
+    private var todo = setOf<String>()
 
+    fun setData(data: Set<String>) {
+        todo = data
+        notifyDataSetChanged()
+    }
 
-    override fun onBindViewHolder(holder: ProductsAdapter.ProductsHolder, position: Int) = holder.bind(datas[position])
+    fun addData(data: String) {
+        todo = todo.toMutableList().apply { add(0, data) }.sorted().toSet()
+        notifyDataSetChanged()
+    }
 
-    override fun getItemCount(): Int = datas.size
+    fun deleteData(data: String) {
+        val index = todo.toMutableList().indexOf(data)
+        todo = todo.toMutableList().apply { remove(data) }.toSet()
+        notifyItemRemoved(index)
+    }
 
-}
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoAdapter.ViewHolder {
+        return ViewHolder(
+            ItemTodoBinding.inflate(LayoutInflater.from(context), parent, false),
+            listener
+        )
+    }
+
+    override fun onBindViewHolder(holder: TodoAdapter.ViewHolder, position: Int) {
+        holder.bindData(todo.toMutableList()[position])
+    }
+
+    override fun getItemCount(): Int = todo.size
+}*/

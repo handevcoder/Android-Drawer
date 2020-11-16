@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
+
 data class Products(
     @SerializedName("image")
     val image: String,
@@ -18,4 +18,5 @@ data class Products(
     val title: String,
     @SerializedName("category")
     val category: String
-): Parcelable
+)
+
